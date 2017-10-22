@@ -14,6 +14,7 @@ sudo gem install lolcat
 
 # download script
 cd
+wget -O /usr/bin/motd "https://raw.githubusercontent.com/macisvpn/premiumnow/master/motd"
 wget -O /usr/bin/benchmark "https://raw.githubusercontent.com/macisvpn/premiumnow/master/menu/benchmark.sh"
 wget -O /usr/bin/speedtest  "https://raw.githubusercontent.com/macisvpn/premiumnow/master/menu/speedtest_cli.py"
 wget -O /usr/bin/ps-mem "https://raw.githubusercontent.com/macisvpn/premiumnow/master/menu/ps_mem.py"
@@ -54,6 +55,7 @@ echo "0 */12 * * * root /sbin/reboot" > /etc/cron.d/reboot
 echo "*/30 * * * * root /usr/bin/clearcache.sh" > /etc/cron.d/clearcache1
 
 cd
+chmod +x /usr/bin/motd
 chmod +x /usr/bin/benchmark
 chmod +x /usr/bin/speedtest
 chmod +x /usr/bin/ps-mem
