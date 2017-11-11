@@ -1,120 +1,153 @@
-#!/bin/bash
-#------------------------------------------////
-# Bash Anherr
-# Last Modified 9 Jan  2015 by @4nherr
-# Running on Kali Linux 1.1
-#------------------------------------------////
-#------------------------------------------////
-# Colors:
-#------------------------------------------////
-black='\e[0;30m'
-blue='\e[0;34m'
-green='\e[0;32m'
-cyan='\e[0;36m'
-red='\e[0;31m'
-purple='\e[0;35m'
-brown='\e[0;33m'
-lightgray='\e[0;37m'
-darkgray='\e[1;30m'
-lightblue='\e[1;34m'
-lightgreen='\e[1;32m'
-lightcyan='\e[1;36m'
-lightred='\e[1;31m'
-lightpurple='\e[1;35m'
-yellow='\e[1;33m'
-white='\e[1;37m'
-nc='\e[0m'
-#------------------------------------------////
-# Aliases:
-#------------------------------------------////
-#alias myip='curl -s checkip.dyndns.org|sed -e 's/.*Current IP Address: //' -e 's/<.*$//'
-alias findbig='find . -type f -exec ls -s {} \; | sort -n -r | head -5'
-#alias ps='my_ps'
-alias ports='netstat -nape --inet'
-alias btadmin='firefox http://anher323.blogspot.com &'
-alias forum=' firefox http://forum.indonesianbacktrack.or.id &'
-alias ping='ping -c 6'
-alias ns='netstat -alnp --protocol=inet'
-alias ls='ls -aF --color=always'
-alias la='ls -Al'
-alias lx='ls -lXB'
-alias lk='ls -lSr'
-alias lc='ls -lcr'
-alias lu='ls -lur'
-alias lr='ls -lR'
-alias lt='ls -ltr'
-alias lm='ls -al |more'
-alias rm='rm -rf'
-#------------------------------------------////
-# Functions and Scripts:
-#------------------------------------------////
-localnet ()
-{
-/sbin/ifconfig | awk /'inet addr/ {print $2}'
-echo ""
-/sbin/ifconfig | awk /'Bcast/ {print $3}'
-echo ""
-}
-myip ()
-{
-lynx -dump -hiddenlinks=ignore -nolist http://checkip.dyndns.org:8245/ | grep "Current IP Address" | cut -d":" -f2 | cut -d" " -f2
-}
-upinfo ()
-{
-echo -ne "${green}$HOSTNAME ${red}uptime is ${green} \t ";uptime | awk /'up/ {print $3,$4,$5,$6,$7,$8,$9,$10}'
-}
-cd()
-{
-  if [ -n "$1" ]; then
-    builtin cd "$@" && ls
-  else
-    builtin cd ~ && ls
-  fi
-}
-weather ()
-{
-declare -a WEATHERARRAY
-WEATHERARRAY=( `lynx -dump "http://www.google.com/search?hl=en&lr=&client=firefox-a&rls=org.mozilla_en-US_official&q=weather+${1}&btnG=Search" | grep -A 5 -m 1 "Weather for" | sed 's;\[26\]Add to iGoogle\[27\]IMG;;g'`)
-echo ${WEATHERARRAY[@]}
-}
-#------------------------------------------////
-# Some original .bashrc contents:
-#------------------------------------------////
+ # ~/.bashrc: executed by bash(1) for non-login shells.
+# see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
+# for examples
+
 # If not running interactively, don't do anything
-[ -z "$PS1" ] && return
-# don't put duplicate lines in the history. See bash(1) for more options
-export HISTCONTROL=ignoredups
+case $- in
+    *i*) ;;
+      *) return;;
+esac
+
+# don't put duplicate lines or lines starting with space in the history.
+# See bash(1) for more options
+HISTCONTROL=ignoreboth
+
+# append to the history file, don't overwrite it
+shopt -s histappend
+
+# for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
+HISTSIZE=1000
+HISTFILESIZE=2000
+
+# check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
 shopt -s checkwinsize
+
+# If set, the pattern "**" used in a pathname expansion context will
+# match all files and zero or more directories and subdirectories.
+#shopt -s globstar
+
 # make less more friendly for non-text input files, see lesspipe(1)
-[ -x /usr/bin/lesspipe ] && eval "$(lesspipe)"
-# set variable identify\e[1;32ming the chroot you work in (used in the prompt below)
-if [ -z "$debian_chroot" ] && [ -r /etc/debian_chroot ]; then
+#[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
+
+# set variable identifying the chroot you work in (used in the prompt below)
+if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
     debian_chroot=$(cat /etc/debian_chroot)
 fi
-#PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]anher@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
-#------------------------------------------////
-# Prompt:
-#------------------------------------------////
 
-#PS1='\e[0;36m\h\[\e[0;36m\] \w \[\033[00m\] $ \[\033[00m\]'
-PS1='\033[01;32manher\[\033[01;32m\]@\[\033[01;32m\]\h\[\033[00;32m\]{\[\033[01;32m\]\w\[\033[01;32m\]}\[\033[01;32m\]:\[\033[00m\]'
-#PS1='\e[0;36m\W\@ \$\e[m '
-#if [ `id -un` != root ]; then
-#PS1="[${EGR}\u@\h${EBL} \W${NONE}]# "
-#else
-#PS1="[${ERD}\h${EBL} \W${NONE}]# "
-#fi
-#------------------------------------------////
+# set a fancy prompt (non-color, unless we know we "want" color)
+case "$TERM" in
+    xterm-color) color_prompt=yes;;
+esac
 
-#------------------------------------------////
+# uncomment for a colored prompt, if the terminal has the capability; turned
+# off by default to not distract the user: the focus in a terminal window
+# should be on the output of commands, not on the prompt
+force_color_prompt=yes
 
+if [ -n "$force_color_prompt" ]; then
+    if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
+	# We have color support; assume it's compliant with Ecma-48
+	# (ISO/IEC-6429). (Lack of such support is extremely rare, and such
+	# a case would tend to support setf rather than setaf.)
+	color_prompt=yes
+    else
+	color_prompt=
+    fi
+fi
+
+if [ "$color_prompt" = yes ]; then
+    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;34m\]\u@\h\[\033[00m\]:\[\033[01;31m\]\w\[\033[00m\]\$ '
+else
+    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
+fi
+unset color_prompt force_color_prompt
+
+# If this is an xterm set the title to user@host:dir
+case "$TERM" in
+xterm*|rxvt*)
+    PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
+    ;;
+*)
+    ;;
+esac
+
+# enable color support of ls and also add handy aliases
+if [ -x /usr/bin/dircolors ]; then
+    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+    alias ls='ls --color=auto'
+    alias dir='dir --color=auto'
+    alias vdir='vdir --color=auto'
+    alias grep='grep --color=auto'
+    alias fgrep='fgrep --color=auto'
+    alias egrep='egrep --color=auto'
+fi
+
+# some more ls aliases
+#alias ll='ls -l'
+#alias la='ls -A'
+#alias l='ls -CF'
+
+# Alias definitions.
+# You may want to put all your additions into a separate file like
+# ~/.bash_aliases, instead of adding them here directly.
+# See /usr/share/doc/bash-doc/examples in the bash-doc package.
+
+if [ -f ~/.bash_aliases ]; then
+    . ~/.bash_aliases
+fi
+
+# enable programmable completion features (you don't need to enable
+# this, if it's already enabled in /etc/bash.bashrc and /etc/profile
+# sources /etc/bash.bashrc).
+if ! shopt -oq posix; then
+  if [ -f /usr/share/bash-completion/bash_completion ]; then
+    . /usr/share/bash-completion/bash_completion
+  elif [ -f /etc/bash_completion ]; then
+    . /etc/bash_completion
+  fi
+fi
+# Modifikasi Terminal
+
+blue='\e[1;23m'
+green='\e[0;23m'
+purple='\e[1;23m'
+cyan='\e[1;23m'
+red='\e[1;23m'
+
+MYIP=$(wget -qO- ipv4.icanhazip.com)
+#echo -e $green' ☠>_________________'
 clear
-echo -e "${lightgreen}";figlet "Anherr Blog's";
-echo "==================  http://anher323.blogspot.com  =================="
-echo -ne "${lightgreen}Today is:\t\t${red}" `date`; echo ""
-echo -e "${lightgreen}Kernel Information: \t${red}" `uname -smr`
-echo -ne "${lightgreen}";upinfo;echo ""
-echo "Indonesian Backtrack Team"
-echo ""the quieter you become, the more you able to hear""
-echo "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-="
+echo "" | lolcat
+echo "" | lolcat
+echo "" | lolcat
+echo "      --[         SELAMAT DATANG  DI fluxo7                  ]--"| boxes -d boy | lolcat
+echo "         ====================================================="| lolcat
+echo "         #           WhatsApp     : -                       #"| lolcat
+echo "         #           Telegram     : @fluxo7                 #"| lolcat
+echo "         #           GROUP        : T.me/fluxo7             #"| lolcat
+echo "         #           Channel      : T.me/fluxo7             #"| lolcat
+echo "         #--------------------------------------------------#"| lolcat
+echo "         #      Sila taip [menu] and ENTER untuk options    #"| lolcat
+echo "         #--------------------------------------------------#"| lolcat
+echo "         ===================================================="| lolcat
+date +"                            %A, %d-%m-%Y" | lolcat
+date +"                                 %H:%M:%S %Z" | lolcat
+echo ""
+echo -e "            Server - IP: $MYIP " | lolcat
+echo ""
+	cname=$( awk -F: '/model name/ {name=$2} END {print name}' /proc/cpuinfo )
+	cores=$( awk -F: '/model name/ {core++} END {print core}' /proc/cpuinfo )
+	freq=$( awk -F: ' /cpu MHz/ {freq=$2} END {print freq}' /proc/cpuinfo )
+	tram=$( free -m | awk 'NR==2 {print $2}' )
+	swap=$( free -m | awk 'NR==4 {print $2}' )
+	up=$(uptime|awk '{ $1=$2=$(NF-6)=$(NF-5)=$(NF-4)=$(NF-3)=$(NF-2)=$(NF-1)=$NF=""; print }')
+
+echo -e "            \e[032;1mCPU model:\e[0m $cname" | lolcat
+echo -e "            \e[032;1mNumber of cores:\e[0m $cores" | lolcat
+echo -e "            \e[032;1mCPU frequency:\e[0m $freq MHz" | lolcat
+echo -e "            \e[032;1mTotal amount of ram:\e[0m $tram MB" | lolcat
+echo -e "            \e[032;1mTotal amount of swap:\e[0m $swap MB" | lolcat
+echo -e "            \e[032;1mSystem uptime:\e[0m $up" | lolcat
+echo "----------------------------------------------------------------------" | lolcat
+echo ""
