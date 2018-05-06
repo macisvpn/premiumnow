@@ -1,1 +1,1 @@
-<embed width="440" height="420" type="application/x-shockwave-flash" src="http://v9.tinypic.com/player.swf?file=mvkpyo&s=9"><br><font size="1"><a href="http://tinypic.com/player.php?v=mvkpyo&s=9">Original Video</a> - More videos at <a href="http://tinypic.com">TinyPic</a></font>
+<a href="http://tinypic.com?ref=9geycz" target="_blank"><img src="http://i49.tinypic.com/9geycz.jpg" border="0" alt="Image and video hosting by TinyPic"></a>
