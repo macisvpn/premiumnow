@@ -1,1 +1,1 @@
-# premiumnow
+<embed width="440" height="420" type="application/x-shockwave-flash" src="http://v9.tinypic.com/player.swf?file=mvkpyo&s=9"><br><font size="1"><a href="http://tinypic.com/player.php?v=mvkpyo&s=9">Original Video</a> - More videos at <a href="http://tinypic.com">TinyPic</a></font>
